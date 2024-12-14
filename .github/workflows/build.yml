@@ -12,14 +12,13 @@ env:
   JAVA_VERSION: '21'
 
 jobs:
-  analyze:
-    name: Static Code Analysis
+  build:
+    name: Build and Analyze
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -28,27 +27,25 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           
-      - name: Run SonarCloud Analysis
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn verify sonar:sonar
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-          cache: 'maven'
-          
-      - name: Run Tests
-        run: mvn verify
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=mortensams_ly-java-example
         
       - name: Upload Test Report
         if: always()
@@ -56,10 +53,10 @@ jobs:
         with:
           name: test-report
           path: target/site/jacoco/
-          
-  build-and-push:
+
+  publish:
     name: Build and Push Docker Image
-    needs: [analyze, test]
+    needs: [build]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
