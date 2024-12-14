@@ -4,41 +4,34 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
 
 @RegisterForReflection
-public class AggregatedDataPoint {
-    private Instant timestamp;
-    private TemperatureStats ambientTemperature;
-    private TemperatureStats deviceTemperature;
+public final class AggregatedDataPoint {
+    private final Instant timestamp;
+    private final TemperatureStats ambientTemperature;
+    private final TemperatureStats deviceTemperature;
 
     public AggregatedDataPoint() {
+        this(Instant.EPOCH, new TemperatureStats(), new TemperatureStats());
     }
 
     public AggregatedDataPoint(Instant timestamp, TemperatureStats ambientTemperature, TemperatureStats deviceTemperature) {
-        this.timestamp = timestamp != null ? Instant.from(timestamp) : null;
-        this.ambientTemperature = ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
-        this.deviceTemperature = deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
+        this.timestamp = timestamp != null ? timestamp : Instant.EPOCH;
+        this.ambientTemperature = new TemperatureStats(ambientTemperature != null ? ambientTemperature : new TemperatureStats());
+        this.deviceTemperature = new TemperatureStats(deviceTemperature != null ? deviceTemperature : new TemperatureStats());
+    }
+
+    public AggregatedDataPoint(AggregatedDataPoint other) {
+        this(other.timestamp, other.ambientTemperature, other.deviceTemperature);
     }
 
     public Instant getTimestamp() {
-        return timestamp != null ? Instant.from(timestamp) : null;
-    }
-
-    public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp != null ? Instant.from(timestamp) : null;
+        return timestamp;
     }
 
     public TemperatureStats getAmbientTemperature() {
-        return ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
-    }
-
-    public void setAmbientTemperature(TemperatureStats ambientTemperature) {
-        this.ambientTemperature = ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
+        return new TemperatureStats(ambientTemperature);
     }
 
     public TemperatureStats getDeviceTemperature() {
-        return deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
-    }
-
-    public void setDeviceTemperature(TemperatureStats deviceTemperature) {
-        this.deviceTemperature = deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
+        return new TemperatureStats(deviceTemperature);
     }
 }

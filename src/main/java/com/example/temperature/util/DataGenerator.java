@@ -1,14 +1,17 @@
 package com.example.temperature.util;
 
 import com.opencsv.CSVWriter;
-import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class DataGenerator {
-    private static final Random RANDOM = new Random(42);
+    private static final SecureRandom RANDOM = new SecureRandom();
     private static final double BASE_TEMP = 22.0;
     private static final double DAILY_VARIATION = 1.5;
     private static final double NOISE_AMPLITUDE = 0.2;
@@ -54,7 +57,9 @@ public class DataGenerator {
         }
 
         // Write temperature data
-        try (CSVWriter writer = new CSVWriter(new FileWriter("temperature_data.csv"))) {
+        try (FileOutputStream fos = new FileOutputStream("temperature_data.csv");
+             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+             CSVWriter writer = new CSVWriter(osw)) {
             writer.writeAll(records);
         }
 
@@ -80,7 +85,9 @@ public class DataGenerator {
             });
         }
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter("spike_times.csv"))) {
+        try (FileOutputStream fos = new FileOutputStream("spike_times.csv");
+             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+             CSVWriter writer = new CSVWriter(osw)) {
             writer.writeAll(spikeRecords);
         }
     }

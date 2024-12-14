@@ -6,7 +6,8 @@ import com.opencsv.exceptions.CsvException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.annotation.PostConstruct;
 
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -24,7 +25,10 @@ public class TemperatureService {
     }
 
     private void loadData() {
-        try (CSVReader reader = new CSVReader(new FileReader("temperature_data.csv", StandardCharsets.UTF_8))) {
+        try (FileInputStream fis = new FileInputStream("temperature_data.csv");
+             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+             CSVReader reader = new CSVReader(isr)) {
+             
             // Skip header
             reader.skip(1);
             
