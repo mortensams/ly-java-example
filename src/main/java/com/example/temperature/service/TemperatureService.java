@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -23,7 +24,7 @@ public class TemperatureService {
     }
 
     private void loadData() {
-        try (CSVReader reader = new CSVReader(new FileReader("temperature_data.csv"))) {
+        try (CSVReader reader = new CSVReader(new FileReader("temperature_data.csv", StandardCharsets.UTF_8))) {
             // Skip header
             reader.skip(1);
             

@@ -2,6 +2,7 @@ package com.example.temperature.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @RegisterForReflection
@@ -18,10 +19,10 @@ public class AggregationResponse {
     public AggregationResponse(int resolutionSeconds, Instant startTime, Instant endTime, 
                              int dataPoints, List<AggregatedDataPoint> aggregatedData) {
         this.resolutionSeconds = resolutionSeconds;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = startTime != null ? Instant.from(startTime) : null;
+        this.endTime = endTime != null ? Instant.from(endTime) : null;
         this.dataPoints = dataPoints;
-        this.aggregatedData = aggregatedData;
+        this.aggregatedData = aggregatedData != null ? new ArrayList<>(aggregatedData) : new ArrayList<>();
     }
 
     public int getResolutionSeconds() {
@@ -33,19 +34,19 @@ public class AggregationResponse {
     }
 
     public Instant getStartTime() {
-        return startTime;
+        return startTime != null ? Instant.from(startTime) : null;
     }
 
     public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
+        this.startTime = startTime != null ? Instant.from(startTime) : null;
     }
 
     public Instant getEndTime() {
-        return endTime;
+        return endTime != null ? Instant.from(endTime) : null;
     }
 
     public void setEndTime(Instant endTime) {
-        this.endTime = endTime;
+        this.endTime = endTime != null ? Instant.from(endTime) : null;
     }
 
     public int getDataPoints() {
@@ -57,10 +58,10 @@ public class AggregationResponse {
     }
 
     public List<AggregatedDataPoint> getAggregatedData() {
-        return aggregatedData;
+        return new ArrayList<>(aggregatedData != null ? aggregatedData : new ArrayList<>());
     }
 
     public void setAggregatedData(List<AggregatedDataPoint> aggregatedData) {
-        this.aggregatedData = aggregatedData;
+        this.aggregatedData = aggregatedData != null ? new ArrayList<>(aggregatedData) : new ArrayList<>();
     }
 }

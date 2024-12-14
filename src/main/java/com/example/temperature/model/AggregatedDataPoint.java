@@ -13,32 +13,32 @@ public class AggregatedDataPoint {
     }
 
     public AggregatedDataPoint(Instant timestamp, TemperatureStats ambientTemperature, TemperatureStats deviceTemperature) {
-        this.timestamp = timestamp;
-        this.ambientTemperature = ambientTemperature;
-        this.deviceTemperature = deviceTemperature;
+        this.timestamp = timestamp != null ? Instant.from(timestamp) : null;
+        this.ambientTemperature = ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
+        this.deviceTemperature = deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
     }
 
     public Instant getTimestamp() {
-        return timestamp;
+        return timestamp != null ? Instant.from(timestamp) : null;
     }
 
     public void setTimestamp(Instant timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp = timestamp != null ? Instant.from(timestamp) : null;
     }
 
     public TemperatureStats getAmbientTemperature() {
-        return ambientTemperature;
+        return ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
     }
 
     public void setAmbientTemperature(TemperatureStats ambientTemperature) {
-        this.ambientTemperature = ambientTemperature;
+        this.ambientTemperature = ambientTemperature != null ? new TemperatureStats(ambientTemperature) : null;
     }
 
     public TemperatureStats getDeviceTemperature() {
-        return deviceTemperature;
+        return deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
     }
 
     public void setDeviceTemperature(TemperatureStats deviceTemperature) {
-        this.deviceTemperature = deviceTemperature;
+        this.deviceTemperature = deviceTemperature != null ? new TemperatureStats(deviceTemperature) : null;
     }
 }

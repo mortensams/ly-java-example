@@ -17,6 +17,14 @@ public class TemperatureStats {
         this.max = max;
     }
 
+    public TemperatureStats(TemperatureStats other) {
+        if (other != null) {
+            this.mean = other.mean;
+            this.min = other.min;
+            this.max = other.max;
+        }
+    }
+
     public double getMean() {
         return mean;
     }
